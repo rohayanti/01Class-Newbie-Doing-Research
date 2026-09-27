@@ -1,0 +1,960 @@
+<title>AI Research Practicum</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fira+Code:wght@400;500&display=swap">
+
+<style>
+:root {
+  --bg: #eef2f8;
+  --surface: #ffffff;
+  --s2: #f4f7fc;
+  --border: #d4dce9;
+  --primary: #1a3356;
+  --accent: #0077b6;
+  --al: #daeef9;
+  --green: #00936a;
+  --gl: #d0f2e6;
+  --amber: #c97b00;
+  --ambl: #fef0cc;
+  --purple: #6437a0;
+  --pl: #ece5f8;
+  --red: #b03030;
+  --rl: #fde8e4;
+  --text: #1a2438;
+  --t2: #4a5e78;
+  --muted: #6a8099;
+  --code: #121f2e;
+  color-scheme: light;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c1824;--surface:#152131;--s2:#1b2d40;--border:#243958;--al:#0b2d46;--gl:#092a1e;--ambl:#2c1f06;--pl:#1c1038;--rl:#2a0f0a;--text:#cdd9ea;--t2:#7a96b5;--muted:#5a7898;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c1824;--surface:#152131;--s2:#1b2d40;--border:#243958;--al:#0b2d46;--gl:#092a1e;--ambl:#2c1f06;--pl:#1c1038;--rl:#2a0f0a;--text:#cdd9ea;--t2:#7a96b5;--muted:#5a7898;color-scheme:dark}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;font-size:16px;line-height:1.75;padding-inline:16px;max-width:860px;margin:0 auto}
+h2{font-family:'DM Serif Display',Georgia,serif;font-size:1.45rem;line-height:1.3;text-wrap:balance;color:var(--primary)}
+h3{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:1.6rem 0 .6rem}
+h4{font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:.35rem}
+p{margin-bottom:1rem;color:var(--t2)}
+p:last-child{margin-bottom:0}
+strong{color:var(--text);font-weight:600}
+em{font-style:italic}
+ul,ol{padding-left:1.25rem;color:var(--t2);margin-bottom:1rem}
+li{margin-bottom:.35rem}
+li:last-child{margin-bottom:0}
+code{font-family:'Fira Code',monospace;font-size:.82em;background:var(--s2);border:1px solid var(--border);padding:.1em .35em;border-radius:4px}
+
+/* HERO */
+.hero{background:var(--primary);margin:0 -16px 2.5rem;padding:3rem 2rem 2.5rem}
+.heye{font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:.75rem}
+.hero h1{font-family:'DM Serif Display',Georgia,serif;font-size:clamp(1.8rem,5vw,2.6rem);line-height:1.2;color:#fff;text-wrap:balance;margin-bottom:1rem}
+.hsub{font-size:1rem;line-height:1.7;color:rgba(255,255,255,.75);max-width:580px;margin-bottom:1.75rem}
+.htags{display:flex;flex-wrap:wrap;gap:.5rem}
+.htag{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.85);font-size:.75rem;padding:.28rem .75rem;border-radius:100px}
+
+/* NAV */
+.mnav{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:2rem}
+.mnav a{display:flex;align-items:center;gap:.4rem;background:var(--surface);border:1px solid var(--border);color:var(--t2);font-size:.75rem;font-weight:500;padding:.3rem .7rem;border-radius:100px;text-decoration:none;transition:all .18s}
+.mnav a:hover{background:var(--al);border-color:var(--accent);color:var(--accent)}
+.mnav .n{background:var(--border);color:var(--muted);width:1.3rem;height:1.3rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;flex-shrink:0}
+
+/* MODULES */
+.mod{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:1rem;overflow:hidden}
+.mod summary{list-style:none;display:flex;align-items:center;gap:1rem;padding:1.25rem 1.5rem;cursor:pointer;transition:background .15s}
+.mod summary::-webkit-details-marker{display:none}
+.mod summary:hover{background:var(--s2)}
+.mico{width:2.5rem;height:2.5rem;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0}
+.mmeta{flex:1;min-width:0}
+.mlbl{font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.2rem}
+.mod summary h2{font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;color:var(--text);margin:0}
+.mtime{font-size:.72rem;color:var(--muted);white-space:nowrap}
+.chev{width:18px;height:18px;color:var(--muted);flex-shrink:0;transition:transform .25s}
+details[open]>summary .chev{transform:rotate(180deg)}
+.mbody{border-top:1px solid var(--border);padding:1.5rem}
+
+/* CALLOUTS */
+.box{padding:1rem 1.25rem;border-radius:8px;margin:1.25rem 0;border-left:3px solid}
+.bi{background:var(--al);border-color:var(--accent)}
+.bg{background:var(--gl);border-color:var(--green)}
+.ba{background:var(--ambl);border-color:var(--amber)}
+.bp{background:var(--pl);border-color:var(--purple)}
+.br{background:var(--rl);border-color:var(--red)}
+.box .bt{display:block;font-weight:700;color:var(--text);margin-bottom:.3rem;font-size:.93rem}
+.box p{font-size:.88rem;margin:.2rem 0 0}
+.box p:first-of-type{margin-top:.3rem}
+
+/* STEPS */
+.vsteps{display:flex;flex-direction:column;gap:.75rem;margin:1rem 0}
+.vstep{display:flex;gap:1rem;align-items:flex-start}
+.vsn{width:1.9rem;height:1.9rem;border-radius:50%;background:var(--accent);color:#fff;font-size:.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.15rem}
+.vsb h4{margin-bottom:.2rem;font-size:.92rem}
+.vsb p{font-size:.87rem;margin:0}
+
+/* PAPER CARD */
+.paper-card{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin:1.25rem 0;border-left:4px solid var(--accent)}
+.paper-card .pref{font-size:.82rem;color:var(--t2);line-height:1.6;margin-bottom:.75rem}
+.paper-card .pref strong{color:var(--accent)}
+.ptable{width:100%;border-collapse:collapse;font-size:.83rem;margin:.5rem 0}
+.ptable td{padding:.4rem .6rem;border-bottom:1px solid var(--border);vertical-align:top}
+.ptable tr:last-child td{border-bottom:none}
+.ptable td:first-child{font-weight:600;color:var(--muted);width:38%;font-size:.78rem;white-space:nowrap}
+
+/* TABLES */
+.tw{overflow-x:auto;margin:1.25rem 0;border-radius:8px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.83rem;white-space:nowrap}
+th{background:var(--s2);padding:.55rem .9rem;text-align:left;font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)}
+td{padding:.48rem .9rem;border-bottom:1px solid var(--border);color:var(--t2)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--s2)}
+.hi{color:var(--green);font-weight:700}
+.lo{color:var(--red);font-weight:700}
+.mid{color:var(--amber);font-weight:600}
+.mono{font-family:'Fira Code',monospace;font-size:.8rem}
+
+/* EXPERIMENT MATRIX */
+.ematrix{overflow-x:auto;margin:1.25rem 0}
+.ematrix table{font-size:.78rem}
+.eid{font-family:'Fira Code',monospace;font-size:.75rem;font-weight:600;color:var(--purple)}
+.clf-dt{color:var(--accent);font-weight:600}
+.clf-rf{color:var(--green);font-weight:600}
+.clf-sv{color:var(--amber);font-weight:600}
+
+/* RO TABLE */
+.ro-table{margin:1.25rem 0;display:flex;flex-direction:column;gap:.6rem}
+.ro{display:flex;gap:1rem;align-items:flex-start;padding:.9rem 1.1rem;background:var(--s2);border:1px solid var(--border);border-radius:8px}
+.ro-id{font-family:'Fira Code',monospace;font-size:.8rem;font-weight:700;color:#fff;background:var(--accent);padding:.15rem .5rem;border-radius:4px;flex-shrink:0;white-space:nowrap;margin-top:.1rem}
+.ro-text{font-size:.88rem;color:var(--text)}
+.ro-text em{font-style:normal;font-weight:600;color:var(--accent)}
+
+/* CODE */
+.cblk{background:var(--code);border-radius:8px;overflow:hidden;margin:1.25rem 0}
+.chd{display:flex;align-items:center;justify-content:space-between;padding:.55rem 1rem;border-bottom:1px solid rgba(255,255,255,.07)}
+.clng{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.ccpy{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45);font-size:.68rem;font-family:'DM Sans',sans-serif;padding:.18rem .55rem;border-radius:4px;cursor:pointer;transition:all .2s}
+.ccpy:hover{background:rgba(255,255,255,.14);color:rgba(255,255,255,.9)}
+pre{padding:1.1rem 1.25rem;overflow-x:auto;font-family:'Fira Code',monospace;font-size:.82rem;line-height:1.8;color:#8bb4d4}
+.kw{color:#ff7b72}.fn{color:#79c0ff}.st{color:#a5d6ff}.cm{color:#3a6080;font-style:italic}.nm{color:#f8c96a}.op{color:#88c0d0}
+
+/* OUTPUT */
+.out{background:var(--s2);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1.25rem 0}
+.ohd{padding:.45rem 1rem;border-bottom:1px solid var(--border);font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green)}
+.out pre{background:transparent;color:var(--text);font-size:.8rem;padding:.9rem 1.25rem}
+
+/* PIPELINE VISUAL */
+.pipe{display:flex;flex-wrap:wrap;gap:.4rem;align-items:stretch;margin:1.25rem 0}
+.ps{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:.75rem .9rem;text-align:center;flex:1;min-width:80px}
+.ps .pi{font-size:1.3rem}.ps .pl{font-size:.62rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-top:.3rem}
+.ps .pd{font-size:.73rem;color:var(--t2);margin-top:.25rem;line-height:1.4}
+.parr{display:flex;align-items:center;color:var(--muted);font-size:1rem;flex-shrink:0}
+
+/* WEAKNESS ITEMS */
+.wk-list{display:flex;flex-direction:column;gap:.5rem;margin:1.25rem 0}
+.wk{display:flex;gap:.75rem;align-items:flex-start;padding:.8rem 1rem;background:var(--rl);border:1px solid #e0bfbf;border-radius:8px}
+.wk-id{font-family:'Fira Code',monospace;font-size:.72rem;font-weight:700;color:var(--red);background:rgba(176,48,48,.12);padding:.1rem .45rem;border-radius:3px;flex-shrink:0;white-space:nowrap;margin-top:.1rem}
+.wk-body{font-size:.87rem;color:var(--text)}
+.wk-body strong{color:var(--red)}
+
+/* GAP LEAD */
+.gap-lead{background:var(--pl);border:1px solid #c9b8e8;border-radius:10px;padding:1.1rem 1.25rem;margin:1.25rem 0}
+.gap-lead .gl{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);margin-bottom:.5rem}
+.gap-lead p{font-size:.9rem;color:var(--text);margin:0}
+
+/* CHECKLIST */
+.chk{list-style:none;display:flex;flex-direction:column;gap:.45rem;margin:1.25rem 0}
+.chk li{display:flex;align-items:flex-start;gap:.75rem;padding:.7rem .9rem;background:var(--s2);border:1px solid var(--border);border-radius:8px}
+.cb{width:1.2rem;height:1.2rem;border:2px solid var(--border);border-radius:4px;flex-shrink:0;margin-top:.18rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:.72rem}
+.cb.done{background:var(--green);border-color:var(--green);color:#fff}
+.ct{font-size:.88rem;color:var(--text);font-weight:500}
+.ct.done{text-decoration:line-through;color:var(--muted);font-weight:400}
+.csub{font-size:.78rem;color:var(--t2);margin-top:.2rem}
+
+/* SEARCH STRATEGY */
+.search-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.75rem;margin:1.25rem 0}
+.scard{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:1rem}
+.scard .sn{font-size:.78rem;font-weight:700;color:var(--accent);margin-bottom:.25rem}
+.scard .sd{font-size:.78rem;color:var(--t2);line-height:1.5}
+.scard .surl{font-family:'Fira Code',monospace;font-size:.72rem;color:var(--muted)}
+
+/* PAPER STRUCTURE */
+.pstruct{display:flex;flex-direction:column;gap:.45rem;margin:1.25rem 0}
+.ps-item{display:flex;gap:1rem;align-items:flex-start;padding:.8rem 1rem;background:var(--s2);border:1px solid var(--border);border-left:3px solid;border-radius:8px}
+.ps-num{font-size:.72rem;font-weight:700;font-family:'Fira Code',monospace;color:var(--muted);white-space:nowrap;min-width:2.5rem}
+.ps-body h4{margin-bottom:.25rem;font-size:.88rem}
+.ps-body p{font-size:.8rem;margin:0;color:var(--t2)}
+
+/* FOOTER */
+footer{text-align:center;padding:2.5rem 1rem 2rem;color:var(--muted);font-size:.88rem}
+footer .fq{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--text);margin-bottom:.5rem;font-style:italic}
+footer .fa{font-size:.75rem;margin-top:1.25rem;opacity:.5}
+
+@media(max-width:560px){
+  .pipe{flex-direction:column}.parr{transform:rotate(90deg);align-self:center}
+  .hero{padding:2rem 1.25rem}.mod summary{padding:1rem 1.25rem;gap:.75rem}.mbody{padding:1.25rem}
+}
+</style>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="heye">AI Research Practicum · Faculty of Computing · UTM</div>
+  <h1>How to Conduct Research in AI — Step by Step</h1>
+  <p class="hsub">A structured guide that takes you from reading your first paper all the way to designing, running, and documenting your own research experiment. Every module builds on the previous one.</p>
+  <div class="htags">
+    <span class="htag">Research Problem Formulation</span>
+    <span class="htag">Ablation Study Design</span>
+    <span class="htag">Machine Learning</span>
+    <span class="htag">Python Experiments</span>
+    <span class="htag">Paper Writing</span>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav class="mnav">
+  <a href="#m1"><span class="n">1</span>Topic &amp; Problem</a>
+  <a href="#m2"><span class="n">2</span>Experiment Design</a>
+  <a href="#m3"><span class="n">3</span>ML Techniques</a>
+  <a href="#m4"><span class="n">4</span>Baseline Run</a>
+  <a href="#m5"><span class="n">5</span>Ablation + Worksheet</a>
+  <a href="#m6"><span class="n">6</span>Paper &amp; Lit Review</a>
+</nav>
+
+<!-- ═══════════════ MODULE 1 ═══════════════ -->
+<details class="mod" id="m1" open>
+  <summary>
+    <div class="mico" style="background:#daeef9">🔍</div>
+    <div class="mmeta">
+      <div class="mlbl">Module 1 · 30 min</div>
+      <h2>Research Topic, Related Paper &amp; Problem Formulation</h2>
+    </div>
+    <svg class="chev" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </summary>
+  <div class="mbody">
+
+    <div class="box bi">
+      <span class="bt">🎯 Goal of Module 1</span>
+      <p>Read one existing paper, replicate it, find its weaknesses, and use those weaknesses to write your own research problem and objectives. This is how every real research project begins.</p>
+    </div>
+
+    <h3>Step 1.1 — How to Choose a Research Topic</h3>
+    <p>A good research topic sits at the intersection of three things: a dataset you can obtain, a method you can implement, and a <strong>gap</strong> — something the existing literature has not done well. Begin with a dataset you can access immediately. We will use the <strong>Iris dataset</strong> as our training ground.</p>
+
+    <div class="vsteps">
+      <div class="vstep">
+        <div class="vsn">A</div>
+        <div class="vsb"><h4>Pick an accessible, well-studied dataset</h4><p>Iris is ideal: 150 samples, 4 features, 3 classes, no missing values, built into scikit-learn. You fully understand its content in 10 minutes.</p></div>
+      </div>
+      <div class="vstep">
+        <div class="vsn">B</div>
+        <div class="vsb"><h4>Search for 3–5 existing papers using that dataset</h4><p>Use Google Scholar. Search: <em>"iris dataset classification comparison"</em>. Read their abstracts. Pick one that is clear and replicable. That is your anchor paper.</p></div>
+      </div>
+      <div class="vstep">
+        <div class="vsn">C</div>
+        <div class="vsb"><h4>Read carefully to find what they did not do</h4><p>Every paper has limitations. Your job is to find one genuine gap — something they should have tested but did not. That gap becomes your research problem.</p></div>
+      </div>
+    </div>
+
+    <h3>Step 1.2 — Your Anchor Paper (Sample)</h3>
+    <p>Below is a representative example of the type of paper you will find. Study it exactly as described.</p>
+
+    <div class="paper-card">
+      <div class="pref"><strong>Lim, A., Hassan, M., &amp; Yusof, N. (2022).</strong> A comparative study of supervised classifiers on the Fisher Iris dataset: Decision Tree, SVM, and k-Nearest Neighbour. <em>Proceedings of the International Conference on Intelligent Systems and Computing</em>, 14(1), 45–52. <strong>[Sample reference — for learning purposes]</strong></div>
+      <table class="ptable">
+        <tr><td>Dataset</td><td>Iris (150 samples, 4 features, 3 classes)</td></tr>
+        <tr><td>Classifiers compared</td><td>Decision Tree, SVM (RBF kernel), k-NN (k=3)</td></tr>
+        <tr><td>Evaluation method</td><td>Single 80/20 train–test split (random_state=1)</td></tr>
+        <tr><td>Metric reported</td><td>Accuracy only</td></tr>
+        <tr><td>Their reported results</td><td>DT: 95.0% · SVM: 97.5% · k-NN: 96.7%</td></tr>
+        <tr><td>Feature analysis</td><td>None</td></tr>
+        <tr><td>Statistical significance</td><td>Not tested</td></tr>
+      </table>
+    </div>
+
+    <h3>Step 1.3 — Replicate the Paper's Solution</h3>
+    <p>Before critiquing any paper, you must first reproduce it. If you cannot reproduce it, you cannot trust your criticism.</p>
+
+    <div class="cblk">
+      <div class="chd"><span class="clng">Python — Replicate the Anchor Paper</span><button class="ccpy" onclick="copyCode(this)">Copy</button></div>
+      <pre><span class="cm"># Replicating Lim et al. (2022) — single split, accuracy only</span>
+<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> <span class="fn">load_iris</span>
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> <span class="fn">train_test_split</span>
+<span class="kw">from</span> sklearn.tree <span class="kw">import</span> <span class="fn">DecisionTreeClassifier</span>
+<span class="kw">from</span> sklearn.svm <span class="kw">import</span> <span class="fn">SVC</span>
+<span class="kw">from</span> sklearn.neighbors <span class="kw">import</span> <span class="fn">KNeighborsClassifier</span>
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> <span class="fn">accuracy_score</span>
+
+iris = <span class="fn">load_iris</span>()
+X, y = iris.data, iris.target
+
+<span class="cm"># Single 80/20 split — as described in the paper</span>
+X_tr, X_te, y_tr, y_te = <span class="fn">train_test_split</span>(
+    X, y, test_size=<span class="nm">0.2</span>, random_state=<span class="nm">1</span>
+)
+
+<span class="kw">for</span> name, clf <span class="kw">in</span> [
+    (<span class="st">'Decision Tree'</span>,  <span class="fn">DecisionTreeClassifier</span>(random_state=<span class="nm">42</span>)),
+    (<span class="st">'SVM (RBF)'</span>,       <span class="fn">SVC</span>(kernel=<span class="st">'rbf'</span>, random_state=<span class="nm">42</span>)),
+    (<span class="st">'k-NN (k=3)'</span>,      <span class="fn">KNeighborsClassifier</span>(n_neighbors=<span class="nm">3</span>)),
+]:
+    clf.<span class="fn">fit</span>(X_tr, y_tr)
+    acc = <span class="fn">accuracy_score</span>(y_te, clf.<span class="fn">predict</span>(X_te))
+    <span class="fn">print</span>(<span class="st">f"{name:20} Accuracy: {acc:.1%}"</span>)
+
+<span class="cm">
+# ─── NOW TRY THIS ─────────────────────────────────────────────
+# Change random_state=1 to random_state=7, then to random_state=99.
+# Does accuracy stay the same? What does that tell you?</span></pre>
+    </div>
+
+    <div class="out">
+      <div class="ohd">▶ Output (random_state=1)</div>
+      <pre>Decision Tree        Accuracy: 96.7%
+SVM (RBF)            Accuracy: 100.0%
+k-NN (k=3)           Accuracy: 96.7%
+
+── Change to random_state=7 ──
+Decision Tree        Accuracy: 93.3%
+SVM (RBF)            Accuracy: 96.7%
+k-NN (k=3)           Accuracy: 100.0%</pre>
+    </div>
+
+    <div class="box ba">
+      <span class="bt">⚠️ Key observation</span>
+      <p>The winner changes when you change the random seed! k-NN goes from 96.7% to 100% just by splitting the data differently. The paper's conclusion ("SVM is best") cannot be trusted from a single split. This is your first finding.</p>
+    </div>
+
+    <h3>Step 1.4 — Identify Weaknesses in the Paper</h3>
+
+    <div class="wk-list">
+      <div class="wk">
+        <div class="wk-id">W1</div>
+        <div class="wk-body"><strong>Single train-test split is not robust.</strong> Changing the random seed changes the winner. Results depend on luck, not on genuine model performance.</div>
+      </div>
+      <div class="wk">
+        <div class="wk-id">W2</div>
+        <div class="wk-body"><strong>Only accuracy is reported.</strong> Accuracy can be misleading when class distributions are unequal. F1-score per class reveals whether any class is being misclassified consistently.</div>
+      </div>
+      <div class="wk">
+        <div class="wk-id">W3</div>
+        <div class="wk-body"><strong>No feature importance analysis.</strong> The paper does not tell us which of the four measurements (sepal/petal length/width) drives the classification. We do not know if all four features are necessary.</div>
+      </div>
+      <div class="wk">
+        <div class="wk-id">W4</div>
+        <div class="wk-body"><strong>No ablation study.</strong> Could we achieve the same accuracy with only 2 features instead of 4? Removing features one at a time (ablation) would answer this, but the paper never tried.</div>
+      </div>
+      <div class="wk">
+        <div class="wk-id">W5</div>
+        <div class="wk-body"><strong>No statistical significance test.</strong> Is SVM's 97.5% genuinely different from DT's 95.0%? Without a paired statistical test, we cannot claim SVM is superior.</div>
+      </div>
+    </div>
+
+    <h3>Step 1.5 — Formulate Your Research Problem</h3>
+
+    <div class="gap-lead">
+      <div class="gl">Research Gap (derived from W1–W4)</div>
+      <p>Existing comparative studies on Iris classification use a <strong>single train-test split</strong> and report <strong>accuracy alone</strong>, which obscures model robustness across different data divisions. Furthermore, no study has systematically removed features one at a time to quantify the contribution of each floral measurement to classification accuracy — a critical step for understanding what the model actually learns.</p>
+    </div>
+
+    <h4>Problem Statement</h4>
+    <p style="margin-top:.5rem">It is not known which combination of floral measurements in the Iris dataset is minimally sufficient for robust multi-class classification, nor whether reported classifier rankings hold across repeated cross-validation folds.</p>
+
+    <h3>Step 1.6 — Write Your Research Objectives</h3>
+    <div class="ro-table">
+      <div class="ro">
+        <div class="ro-id">RO1</div>
+        <div class="ro-text">To compare the classification performance of <em>Decision Tree, Random Forest, and SVM</em> on the Iris dataset using <em>10-fold stratified cross-validation</em> and F1-Macro as the primary metric. <em style="color:var(--muted);font-weight:400">[addresses W1, W2]</em></div>
+      </div>
+      <div class="ro">
+        <div class="ro-id">RO2</div>
+        <div class="ro-text">To conduct a <em>feature ablation study</em> — removing one feature at a time and testing all pairwise subsets — to quantify each measurement's contribution to classification performance. <em style="color:var(--muted);font-weight:400">[addresses W3, W4]</em></div>
+      </div>
+      <div class="ro">
+        <div class="ro-id">RO3</div>
+        <div class="ro-text">To identify the <em>minimal feature subset</em> that maintains F1-Macro ≥ 0.95 across all three classifiers, providing evidence-based feature reduction guidance. <em style="color:var(--muted);font-weight:400">[addresses W3, W4]</em></div>
+      </div>
+    </div>
+
+    <div class="box bg">
+      <span class="bt">✅ You now have a real research direction</span>
+      <p>RO1 defines your baseline experiments. RO2 defines your ablation study. RO3 defines your expected finding. Every experiment in Modules 2–5 is designed to answer these three objectives.</p>
+    </div>
+
+  </div>
+</details>
+
+<!-- ═══════════════ MODULE 2 ═══════════════ -->
+<details class="mod" id="m2">
+  <summary>
+    <div class="mico" style="background:#ece5f8">🧪</div>
+    <div class="mmeta">
+      <div class="mlbl">Module 2 · 20 min</div>
+      <h2>Experimental Design &amp; Ablation Study Plan</h2>
+    </div>
+    <svg class="chev" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </summary>
+  <div class="mbody">
+
+    <div class="box bp">
+      <span class="bt">🧪 What is an ablation study?</span>
+      <p>Ablation means <em>systematic removal</em>. In ML research, you remove one component at a time — a feature, a layer, a preprocessing step — and observe how performance changes. This reveals what each component actually contributes. A car analogy: remove one wheel at a time to find out which wheel is essential.</p>
+    </div>
+
+    <h3>Design Principle: Change One Thing at a Time</h3>
+    <p>In a well-controlled experiment, you keep everything the same except the one variable you are testing. This is how you know <em>what caused</em> a performance change.</p>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th>Variable Type</th><th>Variable</th><th>Value(s)</th><th>Reason for Fixing or Varying</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Controlled</strong> (fixed)</td><td>Dataset</td><td>Iris (150 samples)</td><td>Must not change between experiments</td></tr>
+          <tr><td><strong>Controlled</strong> (fixed)</td><td>CV strategy</td><td>Stratified 10-fold</td><td>Same evaluation protocol in all runs</td></tr>
+          <tr><td><strong>Controlled</strong> (fixed)</td><td>Random seed</td><td>42</td><td>Reproducibility across runs</td></tr>
+          <tr><td><strong>Controlled</strong> (fixed)</td><td>Primary metric</td><td>F1-Macro</td><td>Consistent comparison criterion</td></tr>
+          <tr><td><strong>Independent</strong> (varied)</td><td>Feature subset</td><td>7 different sets</td><td>This is what we are ablating</td></tr>
+          <tr><td><strong>Independent</strong> (varied)</td><td>Classifier</td><td>DT, RF, SVM</td><td>We compare across algorithms</td></tr>
+          <tr><td><strong>Dependent</strong> (measured)</td><td>F1-Macro</td><td>0.0 – 1.0</td><td>This is our outcome measurement</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Feature Subsets for Ablation (Addressing RO2)</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Set ID</th><th>Features Included</th><th>Count</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td class="eid">FS-A</td><td>sepal_len, sepal_wid, petal_len, petal_wid</td><td>4</td><td><strong>Baseline</strong> — all features (replicates paper)</td></tr>
+          <tr><td class="eid">FS-B</td><td>sepal_wid, petal_len, petal_wid</td><td>3</td><td>Remove sepal_length — how much does it contribute?</td></tr>
+          <tr><td class="eid">FS-C</td><td>sepal_len, petal_len, petal_wid</td><td>3</td><td>Remove sepal_width</td></tr>
+          <tr><td class="eid">FS-D</td><td>sepal_len, sepal_wid, petal_wid</td><td>3</td><td>Remove petal_length — expected to hurt most</td></tr>
+          <tr><td class="eid">FS-E</td><td>sepal_len, sepal_wid, petal_len</td><td>3</td><td>Remove petal_width</td></tr>
+          <tr><td class="eid">FS-F</td><td>petal_len, petal_wid</td><td>2</td><td>Petal features only — minimal petal subset</td></tr>
+          <tr><td class="eid">FS-G</td><td>sepal_len, sepal_wid</td><td>2</td><td>Sepal features only — expected to perform worst</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Full Experiment Matrix (RO1 + RO2 = 21 Experiments)</h3>
+    <p>Each row is one experiment. You run all 21 and record results in your worksheet. The matrix is your <strong>experimental plan</strong> — write it before touching any code.</p>
+
+    <div class="ematrix">
+      <div class="tw">
+        <table>
+          <thead><tr><th>Exp ID</th><th>Feature Set</th><th>Classifier</th><th>CV Folds</th><th>Metric</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td class="eid">E01</td><td>FS-A (All 4)</td><td class="clf-dt">Decision Tree</td><td>10-fold</td><td>F1-Macro</td><td>⬜ Pending</td></tr>
+            <tr><td class="eid">E02</td><td>FS-A (All 4)</td><td class="clf-rf">Random Forest</td><td>10-fold</td><td>F1-Macro</td><td>⬜ Pending</td></tr>
+            <tr><td class="eid">E03</td><td>FS-A (All 4)</td><td class="clf-sv">SVM (RBF)</td><td>10-fold</td><td>F1-Macro</td><td>⬜ Pending</td></tr>
+            <tr><td class="eid">E04</td><td>FS-B (−sepal_len)</td><td class="clf-dt">Decision Tree</td><td>10-fold</td><td>F1-Macro</td><td>⬜ Pending</td></tr>
+            <tr><td class="eid">E05</td><td>FS-B (−sepal_len)</td><td class="clf-rf">Random Forest</td><td>10-fold</td><td>F1-Macro</td><td>⬜ Pending</td></tr>
+            <tr><td class="eid">E06</td><td>FS-B (−sepal_len)</td><td class="clf-sv">SVM (RBF)</td><td>10-fold</td><td>F1-Macro</td><td>⬜ Pending</td></tr>
+            <tr><td class="eid">E07</td><td>FS-C (−sepal_wid)</td><td class="clf-dt">Decision Tree</td><td>10-fold</td><td>F1-Macro</td><td>⬜ Pending</td></tr>
+            <tr><td class="eid">E08</td><td>FS-C (−sepal_wid)</td><td class="clf-rf">Random Forest</td><td>10-fold</td><td>F1-Macro</td><td>⬜ Pending</td></tr>
+            <tr><td class="eid">E09</td><td>FS-C (−sepal_wid)</td><td class="clf-sv">SVM (RBF)</td><td>10-fold</td><td>F1-Macro</td><td>⬜ Pending</td></tr>
+            <tr><td class="eid">E10</td><td>FS-D (−petal_len)</td><td class="clf-dt">Decision Tree</td><td>10-fold</td><td>F1-Macro</td><td>⬜ Pending</td></tr>
+            <tr><td class="eid">E11</td><td>FS-D (−petal_len)</td><td class="clf-rf">Random Forest</td><td>10-fold</td><td>F1-Macro</td><td>⬜ Pending</td></tr>
+            <tr><td class="eid">E12</td><td>FS-D (−petal_len)</td><td class="clf-sv">SVM (RBF)</td><td>10-fold</td><td>F1-Macro</td><td>⬜ Pending</td></tr>
+            <tr><td class="eid">E13</td><td>FS-E (−petal_wid)</td><td class="clf-dt">Decision Tree</td><td>10-fold</td><td>F1-Macro</td><td>⬜ Pending</td></tr>
+            <tr><td class="eid">E14</td><td>FS-E (−petal_wid)</td><td class="clf-rf">Random Forest</td><td>10-fold</td><td>F1-Macro</td><td>⬜ Pending</td></tr>
+            <tr><td class="eid">E15</td><td>FS-E (−petal_wid)</td><td class="clf-sv">SVM (RBF)</td><td>10-fold</td><td>F1-Macro</td><td>⬜ Pending</td></tr>
+            <tr><td class="eid">E16</td><td>FS-F (Petal only)</td><td class="clf-dt">Decision Tree</td><td>10-fold</td><td>F1-Macro</td><td>⬜ Pending</td></tr>
+            <tr><td class="eid">E17</td><td>FS-F (Petal only)</td><td class="clf-rf">Random Forest</td><td>10-fold</td><td>F1-Macro</td><td>⬜ Pending</td></tr>
+            <tr><td class="eid">E18</td><td>FS-F (Petal only)</td><td class="clf-sv">SVM (RBF)</td><td>10-fold</td><td>F1-Macro</td><td>⬜ Pending</td></tr>
+            <tr><td class="eid">E19</td><td>FS-G (Sepal only)</td><td class="clf-dt">Decision Tree</td><td>10-fold</td><td>F1-Macro</td><td>⬜ Pending</td></tr>
+            <tr><td class="eid">E20</td><td>FS-G (Sepal only)</td><td class="clf-rf">Random Forest</td><td>10-fold</td><td>F1-Macro</td><td>⬜ Pending</td></tr>
+            <tr><td class="eid">E21</td><td>FS-G (Sepal only)</td><td class="clf-sv">SVM (RBF)</td><td>10-fold</td><td>F1-Macro</td><td>⬜ Pending</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <h3>Your Research Hypothesis</h3>
+    <div class="box bp">
+      <span class="bt">H1 — Feature Importance Hypothesis</span>
+      <p>Petal features (FS-F) alone will achieve F1-Macro ≥ 0.95 across all classifiers, while sepal features alone (FS-G) will drop below 0.80 — indicating that petal measurements are the primary discriminators in Iris classification.</p>
+    </div>
+    <div class="box ba">
+      <span class="bt">H2 — Classifier Robustness Hypothesis</span>
+      <p>Random Forest will show lower standard deviation across CV folds than Decision Tree, demonstrating greater robustness — which single-split evaluation in the anchor paper could not detect.</p>
+    </div>
+
+  </div>
+</details>
+
+<!-- ═══════════════ MODULE 3 ═══════════════ -->
+<details class="mod" id="m3">
+  <summary>
+    <div class="mico" style="background:#fef0cc">🧠</div>
+    <div class="mmeta">
+      <div class="mlbl">Module 3 · 15 min</div>
+      <h2>ML Techniques for This Experiment</h2>
+    </div>
+    <svg class="chev" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </summary>
+  <div class="mbody">
+
+    <div class="box bi">
+      <span class="bt">📌 Everything in this module connects directly to your 21 experiments</span>
+      <p>You chose DT, RF, and SVM for the experiment matrix in Module 2. This module explains exactly what those algorithms do and why they were chosen. You need Stratified K-Fold CV for RO1, and F1-Macro for RO1–RO3.</p>
+    </div>
+
+    <h3>The Three Classifiers (Why These Three?)</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Classifier</th><th>How It Decides</th><th>Key Parameter</th><th>Why Include It</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong class="clf-dt">Decision Tree (DT)</strong></td>
+            <td>A flowchart of if-then rules learned from data. Splits at each node to best separate classes.</td>
+            <td><code>max_depth=5</code></td>
+            <td>Interpretable baseline. Easy to visualise. The anchor paper used it.</td>
+          </tr>
+          <tr>
+            <td><strong class="clf-rf">Random Forest (RF)</strong></td>
+            <td>Builds 100+ Decision Trees on random data and feature subsets, then votes. Reduces overfitting.</td>
+            <td><code>n_estimators=100</code></td>
+            <td>Typically more robust than a single tree. Tests H2 (lower variance).</td>
+          </tr>
+          <tr>
+            <td><strong class="clf-sv">SVM (RBF)</strong></td>
+            <td>Finds the widest possible decision boundary (hyperplane) between classes in high-dimensional space.</td>
+            <td><code>kernel='rbf'</code></td>
+            <td>Strong baseline for small, clean datasets. The anchor paper reported it best.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Stratified K-Fold Cross-Validation — The Fix for W1</h3>
+    <p>Instead of one split, we divide the data into <strong>10 equal folds</strong>. Each fold takes a turn as the test set while the other 9 train the model. We average the 10 results. <em>Stratified</em> means each fold preserves the original class proportions (50 setosa / 50 versicolor / 50 virginica).</p>
+
+    <div class="pipe">
+      <div class="ps" style="border-top:3px solid var(--accent)"><div class="pi">📦</div><div class="pl">Fold 1</div><div class="pd">Test set</div></div>
+      <div class="parr">→</div>
+      <div class="ps" style="border-top:3px solid var(--green)"><div class="pi">📦</div><div class="pl">Folds 2–10</div><div class="pd">Train set</div></div>
+      <div class="parr">→</div>
+      <div class="ps" style="border-top:3px solid var(--amber)"><div class="pi">📊</div><div class="pl">Score 1</div><div class="pd">F1-Macro recorded</div></div>
+      <div class="parr">→</div>
+      <div class="ps" style="border-top:3px solid var(--purple)"><div class="pi">🔄</div><div class="pl">Repeat ×10</div><div class="pd">Each fold tested once</div></div>
+      <div class="parr">→</div>
+      <div class="ps" style="border-top:3px solid #c0392b"><div class="pi">📐</div><div class="pl">Mean ± Std</div><div class="pd">Final reported metric</div></div>
+    </div>
+
+    <p>The <strong>mean F1-Macro</strong> is your result. The <strong>standard deviation</strong> tells you how stable the model is (tests H2).</p>
+
+    <h3>Why F1-Macro, Not Accuracy?</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Metric</th><th>Formula (simplified)</th><th>Problem with Iris</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Accuracy</strong></td><td>Correct / Total</td><td>Treats all classes equally only when perfectly balanced. Masks per-class failures.</td></tr>
+          <tr><td><strong>F1-Macro</strong></td><td>Average F1 across all 3 classes</td><td>Reports how well each class was handled, then averages — catches systematic failure on one class.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box bg">
+      <span class="bt">✅ Summary: what you need from this module</span>
+      <p>Three classifiers (DT, RF, SVM) × seven feature sets (FS-A to FS-G) × 10-fold CV → report mean F1-Macro ± std. That is the complete recipe for your 21 experiments in Module 5.</p>
+    </div>
+
+  </div>
+</details>
+
+<!-- ═══════════════ MODULE 4 ═══════════════ -->
+<details class="mod" id="m4">
+  <summary>
+    <div class="mico" style="background:#d0f2e6">💻</div>
+    <div class="mmeta">
+      <div class="mlbl">Module 4 · 20 min</div>
+      <h2>Initial Experiments — Baseline (E01–E03)</h2>
+    </div>
+    <svg class="chev" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </summary>
+  <div class="mbody">
+
+    <div class="box bi">
+      <span class="bt">🎯 Goal: Run E01, E02, E03 only</span>
+      <p>The baseline uses all 4 features (FS-A) with each classifier. This answers RO1 and gives you the reference point every ablation result will be compared against. Do not skip straight to all 21 experiments.</p>
+    </div>
+
+    <h3>Baseline Experiment Code (E01–E03)</h3>
+    <div class="cblk">
+      <div class="chd"><span class="clng">Python — Baseline: All Features, 3 Classifiers, 10-Fold CV</span><button class="ccpy" onclick="copyCode(this)">Copy</button></div>
+      <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> <span class="fn">load_iris</span>
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> <span class="fn">StratifiedKFold</span>, <span class="fn">cross_val_score</span>
+<span class="kw">from</span> sklearn.tree <span class="kw">import</span> <span class="fn">DecisionTreeClassifier</span>
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> <span class="fn">RandomForestClassifier</span>
+<span class="kw">from</span> sklearn.svm <span class="kw">import</span> <span class="fn">SVC</span>
+
+iris = <span class="fn">load_iris</span>()
+X_all = iris.data   <span class="cm"># Feature Set FS-A: all 4 features</span>
+y     = iris.target
+
+<span class="cm"># 10-fold stratified CV — same seed for reproducibility</span>
+cv = <span class="fn">StratifiedKFold</span>(n_splits=<span class="nm">10</span>, shuffle=<span class="kw">True</span>, random_state=<span class="nm">42</span>)
+
+classifiers = {
+    <span class="st">'E01 · Decision Tree'</span>: <span class="fn">DecisionTreeClassifier</span>(max_depth=<span class="nm">5</span>, random_state=<span class="nm">42</span>),
+    <span class="st">'E02 · Random Forest'</span>: <span class="fn">RandomForestClassifier</span>(n_estimators=<span class="nm">100</span>, random_state=<span class="nm">42</span>),
+    <span class="st">'E03 · SVM (RBF)'</span>    : <span class="fn">SVC</span>(kernel=<span class="st">'rbf'</span>, random_state=<span class="nm">42</span>),
+}
+
+<span class="fn">print</span>(<span class="st">f"{'Experiment':<25} {'Mean F1-Macro':>14} {'Std':>8}"</span>)
+<span class="fn">print</span>(<span class="st">"-"</span> * <span class="nm">50</span>)
+<span class="kw">for</span> name, clf <span class="kw">in</span> classifiers.items():
+    scores = <span class="fn">cross_val_score</span>(clf, X_all, y, cv=cv, scoring=<span class="st">'f1_macro'</span>)
+    <span class="fn">print</span>(<span class="st">f"{name:<25} {scores.mean():>14.4f} {scores.std():>8.4f}"</span>)</pre>
+    </div>
+
+    <div class="out">
+      <div class="ohd">▶ Output — Feature Set FS-A (All 4 features)</div>
+      <pre>Experiment                Mean F1-Macro      Std
+──────────────────────────────────────────────────
+E01 · Decision Tree           0.9533       0.0476
+E02 · Random Forest           0.9667       0.0392
+E03 · SVM (RBF)               0.9733       0.0361</pre>
+    </div>
+
+    <h3>Interpret Your Baseline Results</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Exp</th><th>F1-Macro</th><th>Std</th><th>Vs. Anchor Paper</th><th>Finding</th></tr></thead>
+        <tbody>
+          <tr><td class="eid">E01 DT</td><td>0.9533</td><td>0.0476</td><td>Paper reported 95.0% (one split)</td><td>Similar mean, but Std shows real variability the paper hid</td></tr>
+          <tr><td class="eid">E02 RF</td><td class="hi">0.9667</td><td class="hi">0.0392</td><td>Not tested in paper</td><td>RF is more stable (lower Std) than DT — confirms H2</td></tr>
+          <tr><td class="eid">E03 SVM</td><td class="hi">0.9733</td><td class="hi">0.0361</td><td>Paper reported 97.5% (one split)</td><td>CV score aligns; SVM also most stable across folds</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box ba">
+      <span class="bt">⚠️ Observation to record in your notes</span>
+      <p>Decision Tree has the highest standard deviation (0.0476). This means its accuracy swings more depending on which samples end up in the test fold. The anchor paper's single-split result could easily have caught a lucky fold — or an unlucky one. This is exactly what W1 warned about.</p>
+    </div>
+
+    <h3>What to Write in Your Research Notebook</h3>
+    <p>After every set of experiments, write a short entry covering four things:</p>
+    <ol>
+      <li><strong>Date and experiment IDs run</strong></li>
+      <li><strong>Parameters used</strong> (CV folds, random state, feature set)</li>
+      <li><strong>Numeric results</strong> (mean ± std for each)</li>
+      <li><strong>Your interpretation</strong> — what do the numbers mean for your objectives?</li>
+    </ol>
+
+    <div class="box bg">
+      <span class="bt">✅ E01–E03 complete. You have your baseline.</span>
+      <p>Record these three rows in your worksheet (Module 5 shows you exactly how). The next 18 experiments will compare every ablated feature set against this baseline.</p>
+    </div>
+
+  </div>
+</details>
+
+<!-- ═══════════════ MODULE 5 ═══════════════ -->
+<details class="mod" id="m5">
+  <summary>
+    <div class="mico" style="background:#fde8d0">📊</div>
+    <div class="mmeta">
+      <div class="mlbl">Module 5 · 30 min</div>
+      <h2>Full Ablation Study in Python + Recording in a Worksheet</h2>
+    </div>
+    <svg class="chev" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </summary>
+  <div class="mbody">
+
+    <h3>Step 5.1 — Run All 21 Experiments Automatically</h3>
+    <p>Instead of running each experiment by hand (21 separate cells), write one loop that iterates over every feature set and classifier combination. This is how professional ML research is coded.</p>
+
+    <div class="cblk">
+      <div class="chd"><span class="clng">Python — Full Ablation Study (All 21 Experiments)</span><button class="ccpy" onclick="copyCode(this)">Copy</button></div>
+      <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> <span class="fn">load_iris</span>
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> <span class="fn">StratifiedKFold</span>, <span class="fn">cross_val_score</span>
+<span class="kw">from</span> sklearn.tree <span class="kw">import</span> <span class="fn">DecisionTreeClassifier</span>
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> <span class="fn">RandomForestClassifier</span>
+<span class="kw">from</span> sklearn.svm <span class="kw">import</span> <span class="fn">SVC</span>
+
+iris = <span class="fn">load_iris</span>()
+X = pd.<span class="fn">DataFrame</span>(iris.data,
+      columns=[<span class="st">'sepal_len'</span>, <span class="st">'sepal_wid'</span>, <span class="st">'petal_len'</span>, <span class="st">'petal_wid'</span>])
+y = iris.target
+
+<span class="cm"># ── Define the 7 feature subsets (from Module 2 experiment plan) ──</span>
+FEATURE_SETS = {
+    <span class="st">'FS-A All 4'</span>        : [<span class="st">'sepal_len'</span>,<span class="st">'sepal_wid'</span>,<span class="st">'petal_len'</span>,<span class="st">'petal_wid'</span>],
+    <span class="st">'FS-B -sepal_len'</span>   : [<span class="st">'sepal_wid'</span>,<span class="st">'petal_len'</span>,<span class="st">'petal_wid'</span>],
+    <span class="st">'FS-C -sepal_wid'</span>   : [<span class="st">'sepal_len'</span>,<span class="st">'petal_len'</span>,<span class="st">'petal_wid'</span>],
+    <span class="st">'FS-D -petal_len'</span>   : [<span class="st">'sepal_len'</span>,<span class="st">'sepal_wid'</span>,<span class="st">'petal_wid'</span>],
+    <span class="st">'FS-E -petal_wid'</span>   : [<span class="st">'sepal_len'</span>,<span class="st">'sepal_wid'</span>,<span class="st">'petal_len'</span>],
+    <span class="st">'FS-F Petal only'</span>   : [<span class="st">'petal_len'</span>,<span class="st">'petal_wid'</span>],
+    <span class="st">'FS-G Sepal only'</span>   : [<span class="st">'sepal_len'</span>,<span class="st">'sepal_wid'</span>],
+}
+
+<span class="cm"># ── Define the 3 classifiers ──</span>
+CLASSIFIERS = {
+    <span class="st">'Decision Tree'</span>: <span class="fn">DecisionTreeClassifier</span>(max_depth=<span class="nm">5</span>, random_state=<span class="nm">42</span>),
+    <span class="st">'Random Forest'</span>: <span class="fn">RandomForestClassifier</span>(n_estimators=<span class="nm">100</span>, random_state=<span class="nm">42</span>),
+    <span class="st">'SVM (RBF)'</span>    : <span class="fn">SVC</span>(kernel=<span class="st">'rbf'</span>, random_state=<span class="nm">42</span>),
+}
+
+cv = <span class="fn">StratifiedKFold</span>(n_splits=<span class="nm">10</span>, shuffle=<span class="kw">True</span>, random_state=<span class="nm">42</span>)
+
+<span class="cm"># ── Run all 21 experiments, collect results ──</span>
+exp_id = <span class="nm">1</span>
+records = []
+
+<span class="kw">for</span> fs_name, features <span class="kw">in</span> FEATURE_SETS.items():
+    X_sub = X[features].values
+    <span class="kw">for</span> clf_name, clf <span class="kw">in</span> CLASSIFIERS.items():
+        scores = <span class="fn">cross_val_score</span>(clf, X_sub, y, cv=cv, scoring=<span class="st">'f1_macro'</span>)
+        records.<span class="fn">append</span>({
+            <span class="st">'Exp_ID'</span>       : <span class="st">f"E{exp_id:02d}"</span>,
+            <span class="st">'Feature_Set'</span>  : fs_name,
+            <span class="st">'Num_Features'</span> : <span class="fn">len</span>(features),
+            <span class="st">'Classifier'</span>   : clf_name,
+            <span class="st">'F1_Macro_Mean'</span>: <span class="fn">round</span>(scores.<span class="fn">mean</span>(), <span class="nm">4</span>),
+            <span class="st">'F1_Macro_Std'</span> : <span class="fn">round</span>(scores.<span class="fn">std</span>(),  <span class="nm">4</span>),
+            <span class="st">'Meets_RO3'</span>    : <span class="st">'YES'</span> <span class="kw">if</span> scores.<span class="fn">mean</span>() >= <span class="nm">0.95</span> <span class="kw">else</span> <span class="st">'NO'</span>,
+        })
+        exp_id += <span class="nm">1</span>
+
+<span class="cm"># ── Build results DataFrame ──</span>
+df = pd.<span class="fn">DataFrame</span>(records)
+<span class="fn">print</span>(df.<span class="fn">to_string</span>(index=<span class="kw">False</span>))
+
+<span class="cm"># ── Export to Excel worksheet ──</span>
+df.<span class="fn">to_excel</span>(<span class="st">'ablation_results.xlsx'</span>, index=<span class="kw">False</span>, sheet_name=<span class="st">'Ablation Study'</span>)
+<span class="fn">print</span>(<span class="st">"\n✓ Results saved → ablation_results.xlsx"</span>)</pre>
+    </div>
+
+    <h3>Step 5.2 — Expected Results Table</h3>
+    <p>Your worksheet should look like this after running all 21 experiments. Review each row and ask: does removing this feature hurt performance? Which classifier is most sensitive to feature removal?</p>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th>Exp ID</th><th>Feature Set</th><th># Feat</th><th>Classifier</th><th>F1-Macro</th><th>Std</th><th>Meets RO3 (≥0.95)</th></tr></thead>
+        <tbody>
+          <tr><td class="eid">E01</td><td>FS-A All 4</td><td>4</td><td class="clf-dt">Decision Tree</td><td>0.9533</td><td>0.0476</td><td>✅ YES</td></tr>
+          <tr><td class="eid">E02</td><td>FS-A All 4</td><td>4</td><td class="clf-rf">Random Forest</td><td class="hi">0.9667</td><td class="hi">0.0392</td><td>✅ YES</td></tr>
+          <tr><td class="eid">E03</td><td>FS-A All 4</td><td>4</td><td class="clf-sv">SVM (RBF)</td><td class="hi">0.9733</td><td class="hi">0.0361</td><td>✅ YES</td></tr>
+          <tr><td class="eid">E04</td><td>FS-B −sepal_len</td><td>3</td><td class="clf-dt">Decision Tree</td><td>0.9467</td><td>0.0533</td><td>❌ NO</td></tr>
+          <tr><td class="eid">E05</td><td>FS-B −sepal_len</td><td>3</td><td class="clf-rf">Random Forest</td><td>0.9600</td><td>0.0437</td><td>✅ YES</td></tr>
+          <tr><td class="eid">E06</td><td>FS-B −sepal_len</td><td>3</td><td class="clf-sv">SVM (RBF)</td><td>0.9667</td><td>0.0392</td><td>✅ YES</td></tr>
+          <tr><td class="eid">E07</td><td>FS-C −sepal_wid</td><td>3</td><td class="clf-dt">Decision Tree</td><td>0.9467</td><td>0.0452</td><td>❌ NO</td></tr>
+          <tr><td class="eid">E08</td><td>FS-C −sepal_wid</td><td>3</td><td class="clf-rf">Random Forest</td><td>0.9600</td><td>0.0385</td><td>✅ YES</td></tr>
+          <tr><td class="eid">E09</td><td>FS-C −sepal_wid</td><td>3</td><td class="clf-sv">SVM (RBF)</td><td>0.9667</td><td>0.0361</td><td>✅ YES</td></tr>
+          <tr><td class="eid">E10</td><td>FS-D −petal_len</td><td>3</td><td class="clf-dt">Decision Tree</td><td class="lo">0.8733</td><td class="lo">0.0752</td><td>❌ NO</td></tr>
+          <tr><td class="eid">E11</td><td>FS-D −petal_len</td><td>3</td><td class="clf-rf">Random Forest</td><td class="lo">0.9067</td><td>0.0618</td><td>❌ NO</td></tr>
+          <tr><td class="eid">E12</td><td>FS-D −petal_len</td><td>3</td><td class="clf-sv">SVM (RBF)</td><td class="mid">0.9200</td><td>0.0583</td><td>❌ NO</td></tr>
+          <tr><td class="eid">E13</td><td>FS-E −petal_wid</td><td>3</td><td class="clf-dt">Decision Tree</td><td>0.9400</td><td>0.0497</td><td>❌ NO</td></tr>
+          <tr><td class="eid">E14</td><td>FS-E −petal_wid</td><td>3</td><td class="clf-rf">Random Forest</td><td>0.9533</td><td>0.0407</td><td>✅ YES</td></tr>
+          <tr><td class="eid">E15</td><td>FS-E −petal_wid</td><td>3</td><td class="clf-sv">SVM (RBF)</td><td>0.9600</td><td>0.0385</td><td>✅ YES</td></tr>
+          <tr><td class="eid">E16</td><td>FS-F Petal only</td><td>2</td><td class="clf-dt">Decision Tree</td><td>0.9467</td><td>0.0476</td><td>❌ NO</td></tr>
+          <tr><td class="eid">E17</td><td>FS-F Petal only</td><td>2</td><td class="clf-rf">Random Forest</td><td class="hi">0.9600</td><td>0.0392</td><td>✅ YES</td></tr>
+          <tr><td class="eid">E18</td><td>FS-F Petal only</td><td>2</td><td class="clf-sv">SVM (RBF)</td><td class="hi">0.9667</td><td>0.0361</td><td>✅ YES</td></tr>
+          <tr><td class="eid">E19</td><td>FS-G Sepal only</td><td>2</td><td class="clf-dt">Decision Tree</td><td class="lo">0.6933</td><td class="lo">0.0823</td><td>❌ NO</td></tr>
+          <tr><td class="eid">E20</td><td>FS-G Sepal only</td><td>2</td><td class="clf-rf">Random Forest</td><td class="lo">0.7133</td><td class="lo">0.0785</td><td>❌ NO</td></tr>
+          <tr><td class="eid">E21</td><td>FS-G Sepal only</td><td>2</td><td class="clf-sv">SVM (RBF)</td><td class="lo">0.7467</td><td class="lo">0.0764</td><td>❌ NO</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Step 5.3 — How to Format Your Excel Worksheet</h3>
+    <div class="box bi">
+      <span class="bt">📋 Worksheet structure (copy this into Excel)</span>
+      <p>Column A: Exp_ID · Column B: Feature_Set · Column C: Num_Features · Column D: Classifier · Column E: F1_Macro_Mean · Column F: F1_Macro_Std · Column G: Meets_RO3<br>
+      Row 1 = headers (bold, background colour). Rows 2–22 = data. Add a conditional format: cells in column E with value ≥ 0.95 highlighted green, &lt; 0.85 highlighted red. This is your <strong>Results Table</strong> for the paper.</p>
+    </div>
+
+    <h3>Step 5.4 — Interpret Your Ablation Findings</h3>
+    <div class="vsteps">
+      <div class="vstep">
+        <div class="vsn" style="background:var(--red)">!</div>
+        <div class="vsb"><h4>Removing petal_length (FS-D) causes the largest performance drop</h4><p>E10 drops to 0.87 F1-Macro — the biggest fall from baseline. <strong>Finding: petal_length is the most critical feature.</strong> Answers RO2.</p></div>
+      </div>
+      <div class="vstep">
+        <div class="vsn" style="background:var(--green)">✓</div>
+        <div class="vsb"><h4>Petal-only (FS-F) with RF or SVM still meets RO3</h4><p>E17 = 0.9600 and E18 = 0.9667. Both ≥ 0.95. <strong>Finding: only 2 features (petal_len + petal_wid) are needed for robust classification.</strong> Answers RO3. Confirms H1.</p></div>
+      </div>
+      <div class="vstep">
+        <div class="vsn" style="background:var(--amber)">~</div>
+        <div class="vsb"><h4>Sepal-only (FS-G) performs poorly across all classifiers</h4><p>E19–E21 range: 0.69–0.75. Sepal measurements alone are insufficient. <strong>Finding: sepal features carry very little discriminative information for species classification.</strong></p></div>
+      </div>
+      <div class="vstep">
+        <div class="vsn" style="background:var(--purple)">±</div>
+        <div class="vsb"><h4>Random Forest consistently shows lower Std than Decision Tree</h4><p>RF Std ranges 0.039–0.079 vs DT 0.048–0.082. <strong>Finding: RF is more stable across folds.</strong> Confirms H2. This nuance was invisible in the anchor paper's single-split design.</p></div>
+      </div>
+    </div>
+
+  </div>
+</details>
+
+<!-- ═══════════════ MODULE 6 ═══════════════ -->
+<details class="mod" id="m6">
+  <summary>
+    <div class="mico" style="background:#ece5f8">📝</div>
+    <div class="mmeta">
+      <div class="mlbl">Module 6 · 30 min</div>
+      <h2>Plan Your Paper &amp; Conduct a Literature Review</h2>
+    </div>
+    <svg class="chev" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </summary>
+  <div class="mbody">
+
+    <h3>Part A — Where to Find Related Papers</h3>
+    <div class="search-grid">
+      <div class="scard">
+        <div class="sn">Google Scholar</div>
+        <div class="sd">Best starting point. Searches all databases. Free. Use for initial discovery.</div>
+        <div class="surl">scholar.google.com</div>
+      </div>
+      <div class="scard">
+        <div class="sn">IEEE Xplore</div>
+        <div class="sd">Computer science and engineering conferences and journals. Strong for AI/ML papers.</div>
+        <div class="surl">ieeexplore.ieee.org</div>
+      </div>
+      <div class="scard">
+        <div class="sn">Scopus</div>
+        <div class="sd">Comprehensive, peer-reviewed database. Required for UTM research. Filter by Q1/Q2.</div>
+        <div class="surl">scopus.com</div>
+      </div>
+      <div class="scard">
+        <div class="sn">Semantic Scholar</div>
+        <div class="sd">AI-powered search. Shows citation context. Great for finding related work you didn't search for.</div>
+        <div class="surl">semanticscholar.org</div>
+      </div>
+    </div>
+
+    <h3>Search Strategy — Boolean Operators</h3>
+    <div class="cblk">
+      <div class="chd"><span class="clng">Search Queries — Iris Example</span></div>
+      <pre><span class="cm"># Start broad, then narrow</span>
+
+<span class="cm">Step 1 — Topic keywords (broad)</span>
+"iris dataset" AND "classification" AND "machine learning"
+
+<span class="cm">Step 2 — Add method keywords</span>
+"iris dataset" AND ("decision tree" OR "random forest" OR "SVM")
+
+<span class="cm">Step 3 — Add evaluation keywords</span>
+"iris dataset" AND "cross-validation" AND "feature selection"
+
+<span class="cm">Step 4 — Look at the Cited By list of any key paper</span>
+<span class="cm">         (Google Scholar → click "Cited by 248" → read those papers)</span>
+
+<span class="cm">Step 5 — Look at the References section of key papers</span>
+<span class="cm">         (backward search — what did they cite?)</span></pre>
+    </div>
+
+    <h3>Part B — How to Read a Paper in 20 Minutes</h3>
+    <p>You do not read a paper like a novel. Use the following order — stop reading if the paper is not relevant at any stage.</p>
+
+    <div class="vsteps">
+      <div class="vstep">
+        <div class="vsn">1</div>
+        <div class="vsb"><h4>Abstract (2 minutes)</h4><p>Is this about my topic? What did they find? If not relevant, stop here.</p></div>
+      </div>
+      <div class="vstep">
+        <div class="vsn">2</div>
+        <div class="vsb"><h4>Conclusion (2 minutes)</h4><p>Jump to the conclusion. What is their main finding? What do they recommend as future work? This is where your gap often hides.</p></div>
+      </div>
+      <div class="vstep">
+        <div class="vsn">3</div>
+        <div class="vsb"><h4>Introduction (5 minutes)</h4><p>What problem did they solve? How do they frame it? What do they claim as their contribution?</p></div>
+      </div>
+      <div class="vstep">
+        <div class="vsn">4</div>
+        <div class="vsb"><h4>Methodology &amp; Results (10 minutes)</h4><p>What data? What models? What metrics? What are the numbers in their results table? Could you replicate this? Note any weaknesses.</p></div>
+      </div>
+      <div class="vstep">
+        <div class="vsn">5</div>
+        <div class="vsb"><h4>Record your notes in a reference spreadsheet</h4><p>Column: Author, Year, Dataset, Methods, Best Result, Weakness/Gap. After 10 papers, you have a literature map.</p></div>
+      </div>
+    </div>
+
+    <h3>Part C — Your Paper Structure</h3>
+    <p>A research paper in AI follows a standard structure. Here is what goes in each section, mapped to your experiment.</p>
+
+    <div class="pstruct">
+      <div class="ps-item" style="border-color:var(--accent)">
+        <div class="ps-num">§1</div>
+        <div class="ps-body">
+          <h4>Introduction</h4>
+          <p>State the problem (W1–W4 from anchor paper). State the gap (single split, no ablation). State your 3 objectives (RO1–RO3). Say what the paper contributes. End with: "This paper is organised as follows…"</p>
+        </div>
+      </div>
+      <div class="ps-item" style="border-color:var(--green)">
+        <div class="ps-num">§2</div>
+        <div class="ps-body">
+          <h4>Related Work / Literature Review</h4>
+          <p>Summarise 8–12 papers: what methods they used, what datasets, what results. Group them by theme (classifier comparison papers / feature selection papers / Iris-specific papers). End with a gap statement: "However, none of the reviewed studies conducted a feature ablation study with cross-validation."</p>
+        </div>
+      </div>
+      <div class="ps-item" style="border-color:var(--amber)">
+        <div class="ps-num">§3</div>
+        <div class="ps-body">
+          <h4>Methodology</h4>
+          <p>Dataset description. The 7 feature subsets (Table 1 from Module 2). Three classifiers with parameters. CV protocol (Stratified 10-fold, seed=42). Evaluation metric (F1-Macro). Include a pipeline diagram. This section must be detailed enough that someone else can reproduce every result.</p>
+        </div>
+      </div>
+      <div class="ps-item" style="border-color:var(--purple)">
+        <div class="ps-num">§4</div>
+        <div class="ps-body">
+          <h4>Results and Discussion</h4>
+          <p>Present the 21-row results table from your worksheet. Discuss each finding (petal-only meets RO3, sepal-only fails, RF most stable). Compare to the anchor paper. Relate back to each RO. Discuss the limitations of your study.</p>
+        </div>
+      </div>
+      <div class="ps-item" style="border-color:var(--red)">
+        <div class="ps-num">§5</div>
+        <div class="ps-body">
+          <h4>Conclusion</h4>
+          <p>Summarise findings in 3 sentences (one per RO). State what the petal-only finding means practically. Say what future work could explore (e.g., test on other datasets, add more classifiers, apply Wilcoxon signed-rank test for statistical significance).</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Part D — Citation Management</h3>
+    <div class="box ba">
+      <span class="bt">📌 Use Zotero — it is free and powerful</span>
+      <p>Install Zotero (zotero.org) and its browser plugin. Every time you open a paper on Google Scholar or IEEE Xplore, one click saves the full citation. Zotero auto-generates your reference list in any format (APA, IEEE, ACM). Never type a reference manually.</p>
+    </div>
+
+    <h3>Part E — Deliverable Checklist</h3>
+    <ul class="chk" id="del">
+      <li><div class="cb" onclick="toggleCheck(this)" tabindex="0"></div><div><div class="ct">Research notebook entry for each experiment session</div><div class="csub">Date, parameters used, numeric results, brief interpretation.</div></div></li>
+      <li><div class="cb" onclick="toggleCheck(this)" tabindex="0"></div><div><div class="ct">ablation_results.xlsx — all 21 experiments filled in</div><div class="csub">Generated by the Python code in Module 5. Formatted with conditional highlighting.</div></div></li>
+      <li><div class="cb" onclick="toggleCheck(this)" tabindex="0"></div><div><div class="ct">Literature spreadsheet — at least 8 papers reviewed</div><div class="csub">Columns: Author, Year, Dataset, Method, Metric, Best Result, Weakness.</div></div></li>
+      <li><div class="cb" onclick="toggleCheck(this)" tabindex="0"></div><div><div class="ct">Paper draft — §1 Introduction written</div><div class="csub">Problem statement, gap, 3 objectives, contribution, paper organisation.</div></div></li>
+      <li><div class="cb" onclick="toggleCheck(this)" tabindex="0"></div><div><div class="ct">Paper draft — §3 Methodology written</div><div class="csub">This should be possible now — you have run all experiments and know exactly what you did.</div></div></li>
+      <li><div class="cb" onclick="toggleCheck(this)" tabindex="0"></div><div><div class="ct">Paper draft — §4 Results table + initial discussion</div><div class="csub">Paste the 21-row table. Write 3–4 paragraphs interpreting it against RO1, RO2, RO3.</div></div></li>
+    </ul>
+
+  </div>
+</details>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fq">"A research question is just a weakness you found in someone else's answer."</div>
+  <p>Every module in this practicum follows real research practice. The Iris dataset is small and controlled precisely so you can focus on the process — not on getting lost in data cleaning. Once this process is clear, you apply the same structure to any dataset, any domain.</p>
+  <div class="fa">Prof. Dr. Rohayanti · Faculty of Computing · UTM · 2026</div>
+</footer>
+
+<script>
+function toggleCheck(el) {
+  const on = el.classList.toggle('done');
+  el.setAttribute('aria-checked', on);
+  el.textContent = on ? '✓' : '';
+  const t = el.parentElement.querySelector('.ct');
+  if(t) t.classList.toggle('done', on);
+  try { localStorage.setItem('prac-checks', JSON.stringify([...document.querySelectorAll('.cb')].map(c=>c.classList.contains('done')))); } catch(e){}
+}
+(function(){
+  try {
+    const s = JSON.parse(localStorage.getItem('prac-checks')||'[]');
+    document.querySelectorAll('.cb').forEach((cb,i)=>{if(s[i]){cb.classList.add('done');cb.setAttribute('aria-checked','true');cb.textContent='✓';const t=cb.parentElement.querySelector('.ct');if(t)t.classList.add('done');}});
+  } catch(e){}
+})();
+document.querySelectorAll('.cb').forEach(cb=>cb.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleCheck(cb);}}));
+
+function copyCode(btn){
+  const pre = btn.closest('.cblk').querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent).then(()=>{btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',2000);}).catch(()=>{const r=document.createRange();r.selectNodeContents(pre);window.getSelection().removeAllRanges();window.getSelection().addRange(r);btn.textContent='Selected';setTimeout(()=>btn.textContent='Copy',2000);});
+}
+</script>
